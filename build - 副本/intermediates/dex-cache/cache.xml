@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<items version="2" >
+
+    <item
+        jar="C:\Users\Barry\.gradle\caches\modules-2\files-2.1\com.microsoft.azure\azure-mobile-services-android-sdk\2.0.3\5de03bab93697321e5654831bb98df11ad4c19ac\azure-mobile-services-android-sdk-2.0.3.jar"
+        jumboMode="false"
+        revision="22.0.1"
+        sha1="5de03bab93697321e5654831bb98df11ad4c19ac">
+        <dex dex="D:\StudioProjects\ToDoList\app\build\intermediates\pre-dexed\debug\azure-mobile-services-android-sdk-2.0.3-29e79d57ad6967a829a80662b188085eea9defdc.jar" />
+    </item>
+    <item
+        jar="D:\StudioProjects\ToDoList\app\build\intermediates\exploded-aar\com.android.support\support-v4\22.2.1\jars\libs\internal_impl-22.2.1.jar"
+        jumboMode="false"
+        revision="22.0.1"
+        sha1="c471eaaba13ff64f6e0383d1c30a9cdc9a97efeb">
+        <dex dex="D:\StudioProjects\ToDoList\app\build\intermediates\pre-dexed\debug\internal_impl-22.2.1-c80bba6bb2060dd4faba8755948d331234952e44.jar" />
+    </item>
+    <item
+        jar="D:\StudioProjects\ToDoList\app\build\intermediates\exploded-aar\com.android.support\appcompat-v7\22.2.1\jars\classes.jar"
+        jumboMode="false"
+        revision="22.0.1"
+        sha1="4486e953d1f35f8ccab098b1dd67146366d5f731">
+        <dex dex="D:\StudioProjects\ToDoList\app\build\intermediates\pre-dexed\debug\classes-d916364fe4a36fa8fc9459aacc8f722b4c866213.jar" />
+    </item>
+    <item
+        jar="D:\StudioProjects\ToDoList\commons-io-2.4\commons-io-2.4.jar"
+        jumboMode="false"
+        revision="22.0.1"
+        sha1="b1b6ea3b7e4aa4f492509a4952029cd8e48019ad">
+        <dex dex="D:\StudioProjects\ToDoList\app\build\intermediates\pre-dexed\debug\commons-io-2.4-b0842fff36f3dc9fb216aabfb53310c60bda3779.jar" />
+    </item>
+    <item
+        jar="D:\Android\sdk\extras\android\m2repository\com\android\support\support-annotations\22.2.1\support-annotations-22.2.1.jar"
+        jumboMode="false"
+        revision="22.0.1"
+        sha1="61a0ff5c29295ec56d7e0bd3d25d95dbf71b4b2b">
+        <dex dex="D:\StudioProjects\ToDoList\app\build\intermediates\pre-dexed\debug\support-annotations-22.2.1-db1bb2a3f1608a31c38a2d1f5698fe71cc45038a.jar" />
+    </item>
+    <item
+        jar="D:\StudioProjects\ToDoList\app\build\intermediates\exploded-aar\com.android.support\support-v4\22.2.1\jars\classes.jar"
+        jumboMode="false"
+        revision="22.0.1"
+        sha1="f8efd0096475e0daf054267b61544e10dc776503">
+        <dex dex="D:\StudioProjects\ToDoList\app\build\intermediates\pre-dexed\debug\classes-6524924d3913920e83800b496d32a6d83da4783f.jar" />
+    </item>
+    <item
+        jar="C:\Users\Barry\.gradle\caches\modules-2\files-2.1\com.google.code.gson\gson\2.3\5fc52c41ef0239d1093a1eb7c3697036183677ce\gson-2.3.jar"
+        jumboMode="false"
+        revision="22.0.1"
+        sha1="5fc52c41ef0239d1093a1eb7c3697036183677ce">
+        <dex dex="D:\StudioProjects\ToDoList\app\build\intermediates\pre-dexed\debug\gson-2.3-8652158eee0c6d67d74cc6ec4c8346c79323fd6e.jar" />
+    </item>
+    <item
+        jar="D:\StudioProjects\ToDoList\ActiveAndroid\ActiveAndroid.jar"
+        jumboMode="false"
+        revision="22.0.1"
+        sha1="aefdfc42f086c70122f58d76e5448804a6d4ec62">
+        <dex dex="D:\StudioProjects\ToDoList\app\build\intermediates\pre-dexed\debug\ActiveAndroid-f01c5319a2b98caa2de168d9d5d6060b8c81da91.jar" />
+    </item>
+    <item
+        jar="C:\Users\Barry\.gradle\caches\modules-2\files-2.1\com.microsoft.azure\azure-notifications-handler\1.0.1\c322af100020e6db539f2aa367698d4b88fc453f\azure-notifications-handler-1.0.1.jar"
+        jumboMode="false"
+        revision="22.0.1"
+        sha1="c322af100020e6db539f2aa367698d4b88fc453f">
+        <dex dex="D:\StudioProjects\ToDoList\app\build\intermediates\pre-dexed\debug\azure-notifications-handler-1.0.1-f50f73814af29c3087b46be16e75dacacf143689.jar" />
+    </item>
+    <item
+        jar="C:\Users\Barry\.gradle\caches\modules-2\files-2.1\com.google.guava\guava\18.0\cce0823396aa693798f8882e64213b1772032b09\guava-18.0.jar"
+        jumboMode="false"
+        revision="22.0.1"
+        sha1="cce0823396aa693798f8882e64213b1772032b09">
+        <dex dex="D:\StudioProjects\ToDoList\app\build\intermediates\pre-dexed\debug\guava-18.0-90be50459928af5e07b4c5e74d382c506e196666.jar" />
+    </item>
+
+</items>
