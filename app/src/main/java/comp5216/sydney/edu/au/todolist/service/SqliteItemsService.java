@@ -47,7 +47,7 @@ public class SqliteItemsService implements IItemsService{
         ActiveAndroid.beginTransaction();
         try{
             Item newItme=new Item();
-            newItme.id=java.util.UUID.randomUUID().toString();
+            newItme.id=mess.getId();
             newItme.name=mess.getContent();
             newItme.createdTime=mess.getCreatedTime();
             newItme.save();

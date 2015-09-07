@@ -113,7 +113,7 @@ public class MainActivity extends ActionBarActivity {
     public void onAddItemClick(View view) {
         String toAddString = addItemEditText.getText().toString();
         if (toAddString != null && toAddString.length() > 0) {
-            MesssageModel temp=new MesssageModel(null,tools.localCreatedTime(), toAddString);
+            MesssageModel temp=new MesssageModel(java.util.UUID.randomUUID().toString(),tools.localCreatedTime(), toAddString);
 //            Message temp=new Message(null,toAddString,tools.localCreatedTime());
 //            addNewMessage(temp);
 //            addItemEditText.setText(""); // Reset the edittext
