@@ -64,19 +64,18 @@ public class MainActivity extends ActionBarActivity {
     EditText addItemEditText;
     public final int EDIT_ITEM_REQUEST_CODE = 647;
     private IItemsService storeService= SqliteItemsService.getInstance();
-//    private IItemsService storeService;
-    private MobileServiceClient mClient;
-    private MobileServiceTable<Message> mMessageTable;
+//    private MobileServiceClient mClient;
+//    private MobileServiceTable<Message> mMessageTable;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        try {
-            mClient = new MobileServiceClient("https://macchickentodolist.azure-mobile.net/", "EBpItddmmIqYlzvAljjFRSRowGQPtZ73", this);
-            mMessageTable = mClient.getTable(Message.class);
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        }
+//        try {
+//            mClient = new MobileServiceClient("https://macchickentodolist.azure-mobile.net/", "EBpItddmmIqYlzvAljjFRSRowGQPtZ73", this);
+//            mMessageTable = mClient.getTable(Message.class);
+//        } catch (MalformedURLException e) {
+//            e.printStackTrace();
+//        }
         //use "activity_main.xml" as the layout
         setContentView(R.layout.activity_main);
         //reference the "listview" variable to the id-"listview" in the layout
@@ -84,15 +83,10 @@ public class MainActivity extends ActionBarActivity {
         addItemEditText = (EditText) findViewById(R.id.txtNewItem);
         //create an ArrayList of String
         messesages = new ArrayList<MesssageModel>();
-//        String time=localCreatedTime();
-//        messesages.add(new MesssageModel(time,"item one"));
-//        messesages.add(new MesssageModel(time,"item two"));     //Create an adapter for the list view using Android's built-in item layout
 //        storeService= FileItemsService.getInstance(new File(getFilesDir(), "todo.txt"));
-//        messesages=storeService.readItems(null);
-//        messAdapter=new MyMesssageAdapter(this,messesages);
+        messesages=storeService.readItems(null);
         messAdapter=new MyMesssageAdapter(this,messesages);
         listview.setAdapter(messAdapter);
-        refreshItemsFromTable();
         setupListViewListener();
     }
 
@@ -119,16 +113,16 @@ public class MainActivity extends ActionBarActivity {
     public void onAddItemClick(View view) {
         String toAddString = addItemEditText.getText().toString();
         if (toAddString != null && toAddString.length() > 0) {
-            //MesssageModel temp=new MesssageModel(null,tools.localCreatedTime(), toAddString);
-            Message temp=new Message(null,toAddString,tools.localCreatedTime());
-            addNewMessage(temp);
-            addItemEditText.setText(""); // Reset the edittext
-//            if (!storeService.insertItems(messesages,temp)){
-//                Toast.makeText(this, "there is:'" + temp.getContent()+"' in the list", Toast.LENGTH_SHORT).show();
-//            }else{
-//                messAdapter.add(temp);
-//                addItemEditText.setText(""); // Reset the edittext
-//            }
+            MesssageModel temp=new MesssageModel(null,tools.localCreatedTime(), toAddString);
+//            Message temp=new Message(null,toAddString,tools.localCreatedTime());
+//            addNewMessage(temp);
+//            addItemEditText.setText(""); // Reset the edittext
+            if (!storeService.insertItems(messesages,temp)){
+                Toast.makeText(this, "there is:'" + temp.getContent()+"' in the list", Toast.LENGTH_SHORT).show();
+            }else{
+                messAdapter.add(temp);
+                addItemEditText.setText(""); // Reset the edittext
+            }
 
         }
     }
@@ -146,8 +140,8 @@ public class MainActivity extends ActionBarActivity {
                     public void onClick(DialogInterface dialog, int id) {                         //delete the item
                         messesages.remove(position);
                         messAdapter.notifyDataSetChanged();
-//                        storeService.deleteItems(messesages,temp);
-                        delMessage(new Message(temp.getId(),temp.getContent(),temp.getCreatedTime()));
+                        storeService.deleteItems(messesages,temp);
+//                        delMessage(new Message(temp.getId(),temp.getContent(),temp.getCreatedTime()));
                     }
                 }).setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
@@ -166,7 +160,7 @@ public class MainActivity extends ActionBarActivity {
                 MesssageModel updateItem = (MesssageModel) messAdapter.getItem(position);
                 Log.i("MainActivity", "Clicked item " + position + ": " + updateItem.getContent());
                 Intent intent = new Intent(MainActivity.this, EditToDoItemActivity.class);
-                if (intent != null) {             // put "extras" into the bundle for access in the edit activity
+                if (intent != null) {// put "extras" into the bundle for access in the edit activity
                     intent.putExtra("item",updateItem);
                     intent.putExtra("position", position);             // brings up the second activity
                     startActivityForResult(intent, EDIT_ITEM_REQUEST_CODE);
@@ -187,87 +181,11 @@ public class MainActivity extends ActionBarActivity {
                 Log.i("Updated Item in list:", editedItem.getContent() + ",position:" + position);
                 Toast.makeText(this, "updated:" + editedItem.getContent(), Toast.LENGTH_SHORT).show();
                 messAdapter.notifyDataSetChanged();
-//                storeService.updateItems(messesages, null, null);
-//                storeService.updateItems(messesages, oldItem, editedItem.getContent());
-                updateMessage(new Message(editedItem.getId(),editedItem.getContent(),editedItem.getCreatedTime()));
+                storeService.updateItems(messesages, editedItem, oldItem);
+//                updateMessage(new Message(editedItem.getId(),editedItem.getContent(),editedItem.getCreatedTime()));
             }
         }
     }
 
 
-    private void refreshItemsFromTable() {
-        AsyncTask<Void, Void, Void> task = new AsyncTask<Void, Void, Void>(){
-            @Override
-            protected Void doInBackground(Void... params) {
-                try {
-                    final List<Message> results = mMessageTable.where().execute().get();
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            if (results!=null){
-                                messesages.clear();
-                                for (Message item : results) {
-                                    messesages.add(new MesssageModel(item.getId(),item.getCreatedTime(),item.getContent()));
-                                }
-                                messAdapter.notifyDataSetChanged();
-                            }
-                        }
-                    });
-                } catch (final Exception e){
-                    e.printStackTrace();
-                }
-                return null;
-            }
-        }.execute();
-    }
-
-    private void updateMessage(final Message newMessage){
-        AsyncTask<Void, Void, Void> task = new AsyncTask<Void, Void, Void>(){
-            @Override
-            protected Void doInBackground(Void... params) {
-                try {
-                    mMessageTable.update(newMessage);
-                } catch (final Exception e) {
-                    e.printStackTrace();
-                }
-                return null;
-            }
-        }.execute();
-    }
-
-    private void delMessage(final Message message){
-        AsyncTask<Void, Void, Void> task = new AsyncTask<Void, Void, Void>(){
-            @Override
-            protected Void doInBackground(Void... params) {
-                try {
-                    mMessageTable.delete(message);
-                } catch (final Exception e) {
-                    e.printStackTrace();
-                }
-                return null;
-            }
-        }.execute();
-    }
-
-    private void addNewMessage(final Message message){
-        AsyncTask<Void, Void, Void> task = new AsyncTask<Void, Void, Void>(){
-            @Override
-            protected Void doInBackground(Void... params) {
-                try {
-                    final Message result = mMessageTable.insert(message).get();
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            if(result!=null){
-                                messAdapter.add(new MesssageModel(result.getId(),result.getCreatedTime(),result.getContent()));
-                            }
-                        }
-                    });
-                } catch (final Exception e) {
-                    e.printStackTrace();
-                }
-                return null;
-            }
-        }.execute();
-    }
 }

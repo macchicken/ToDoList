@@ -60,21 +60,21 @@ public class SqliteItemsService implements IItemsService{
 
     @Override
     public boolean updateItems(ArrayList<MesssageModel> messages, MesssageModel mess,String text) {
-        Item item=new Select().from(Item.class).where("Name = ? ",mess.getContent()).executeSingle();
+        return false;
+    }
+
+    @Override
+    public boolean updateItems(ArrayList<MesssageModel> messages, MesssageModel mess, MesssageModel old) {
+        Item item=new Select().from(Item.class).where("Name = ? ",old.getContent()).executeSingle();
         ActiveAndroid.beginTransaction();
         try{
-            item.name=text;
+            item.name=mess.getContent();
             item.save();
             ActiveAndroid.setTransactionSuccessful();
         }   finally {
             ActiveAndroid.endTransaction();
         }
         return true;
-    }
-
-    @Override
-    public boolean updateItems(ArrayList<MesssageModel> messages, MesssageModel mess, MesssageModel old) {
-        return false;
     }
 
     @Override
