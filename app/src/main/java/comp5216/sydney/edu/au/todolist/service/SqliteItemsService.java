@@ -65,7 +65,7 @@ public class SqliteItemsService implements IItemsService{
 
     @Override
     public boolean updateItems(ArrayList<MesssageModel> messages, MesssageModel mess, MesssageModel old) {
-        Item item=new Select().from(Item.class).where("Name = ? ",old.getContent()).executeSingle();
+        Item item=new Select().from(Item.class).where("remote_id = ? ", old.getId()).executeSingle();
         ActiveAndroid.beginTransaction();
         try{
             item.name=mess.getContent();
@@ -79,7 +79,7 @@ public class SqliteItemsService implements IItemsService{
 
     @Override
     public boolean deleteItems(ArrayList<MesssageModel> messages, MesssageModel mess) {
-        Item item=new Select().from(Item.class).where("Name = ? ",mess.getContent()).executeSingle();
+        Item item=new Select().from(Item.class).where("remote_id = ? ",mess.getId()).executeSingle();
         ActiveAndroid.beginTransaction();
         try{
             item.delete();
