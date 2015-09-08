@@ -23,7 +23,7 @@ import android.widget.Toast;
 import comp5216.sydney.edu.au.todolist.DTO.Message;
 import comp5216.sydney.edu.au.todolist.common.tools;
 import comp5216.sydney.edu.au.todolist.model.MesssageModel;
-import comp5216.sydney.edu.au.todolist.service.RemoteService;
+
 
 import com.microsoft.windowsazure.mobileservices.*;
 import com.microsoft.windowsazure.mobileservices.table.MobileServiceTable;
@@ -188,53 +188,53 @@ public class MainActivity extends ActionBarActivity {
                     }.execute();
             }
 
-            private void updateMessage(final Message newMessage){
-                AsyncTask<Void, Void, Void> task = new AsyncTask<Void, Void, Void>(){
-                        @Override
-                        protected Void doInBackground(Void... params) {
-                                try {
-                                        mMessageTable.update(newMessage);
-                                    } catch (final Exception e) {
-                                        e.printStackTrace();
-                                    }
-                                return null;
+    private void updateMessage(final Message newMessage){
+        AsyncTask<Void, Void, Void> task = new AsyncTask<Void, Void, Void>(){
+                @Override
+                protected Void doInBackground(Void... params) {
+                        try {
+                                mMessageTable.update(newMessage);
+                            } catch (final Exception e) {
+                                e.printStackTrace();
                             }
-                    }.execute();
-            }
+                        return null;
+                    }
+            }.execute();
+    }
 
-            private void delMessage(final Message message){
-                AsyncTask<Void, Void, Void> task = new AsyncTask<Void, Void, Void>(){
-                        @Override
-                        protected Void doInBackground(Void... params) {
-                                try {
-                                        mMessageTable.delete(message);
-                                    } catch (final Exception e) {
-                                        e.printStackTrace();
-                                    }
-                                return null;
+    private void delMessage(final Message message){
+        AsyncTask<Void, Void, Void> task = new AsyncTask<Void, Void, Void>(){
+                @Override
+                protected Void doInBackground(Void... params) {
+                        try {
+                                mMessageTable.delete(message);
+                            } catch (final Exception e) {
+                                e.printStackTrace();
                             }
-                    }.execute();
-            }
+                        return null;
+                    }
+            }.execute();
+    }
 
-            private void addNewMessage(final Message message){
-                AsyncTask<Void, Void, Void> task = new AsyncTask<Void, Void, Void>(){
-                        @Override
-                        protected Void doInBackground(Void... params) {
-                                try {
-                                        final Message result = mMessageTable.insert(message).get();
-                                        runOnUiThread(new Runnable() {
-                                                @Override
-                                                public void run() {
-                                                        if(result!=null){
-                                                                messAdapter.add(new MesssageModel(result.getId(),result.getCreatedTime(),result.getContent()));
-                                                            }
+    private void addNewMessage(final Message message){
+        AsyncTask<Void, Void, Void> task = new AsyncTask<Void, Void, Void>(){
+                @Override
+                protected Void doInBackground(Void... params) {
+                        try {
+                                final Message result = mMessageTable.insert(message).get();
+                                runOnUiThread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                                if(result!=null){
+                                                        messAdapter.add(new MesssageModel(result.getId(),result.getCreatedTime(),result.getContent()));
                                                     }
-                                            });
-                                    } catch (final Exception e) {
-                                        e.printStackTrace();
-                                    }
-                                return null;
+                                            }
+                                    });
+                            } catch (final Exception e) {
+                                e.printStackTrace();
                             }
-                    }.execute();
-            }
+                        return null;
+                    }
+            }.execute();
+    }
 }
