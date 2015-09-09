@@ -8,6 +8,7 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -18,6 +19,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import comp5216.sydney.edu.au.todolist.DTO.Message;
@@ -25,7 +27,15 @@ import comp5216.sydney.edu.au.todolist.common.tools;
 import comp5216.sydney.edu.au.todolist.model.MesssageModel;
 
 
+import com.google.common.util.concurrent.FutureCallback;
+import com.google.common.util.concurrent.Futures;
+import com.google.common.util.concurrent.ListenableFuture;
+import com.google.common.util.concurrent.SettableFuture;
 import com.microsoft.windowsazure.mobileservices.*;
+import com.microsoft.windowsazure.mobileservices.http.NextServiceFilterCallback;
+import com.microsoft.windowsazure.mobileservices.http.ServiceFilter;
+import com.microsoft.windowsazure.mobileservices.http.ServiceFilterRequest;
+import com.microsoft.windowsazure.mobileservices.http.ServiceFilterResponse;
 import com.microsoft.windowsazure.mobileservices.table.MobileServiceTable;
 
 import static com.microsoft.windowsazure.mobileservices.table.query.QueryOperations.val;
@@ -36,6 +46,7 @@ public class MainActivity extends ActionBarActivity {
     ArrayList<MesssageModel> messesages;
     MyMesssageAdapter messAdapter;
     EditText addItemEditText;
+    private ProgressBar mProgressBar;
     public final int EDIT_ITEM_REQUEST_CODE = 647;
 //    private IItemsService storeService= SqliteItemsService.getInstance();
     private MobileServiceClient mClient;
@@ -44,15 +55,17 @@ public class MainActivity extends ActionBarActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        //use "activity_main.xml" as the layout
+        setContentView(R.layout.activity_main);
+        //reference the "listview" variable to the id-"listview" in the layout
+        mProgressBar = (ProgressBar) findViewById(R.id.loadingProgressBar);
+        mProgressBar.setVisibility(ProgressBar.GONE);
         try {
-            mClient = new MobileServiceClient("https://macchickentodolist.azure-mobile.net/", "EBpItddmmIqYlzvAljjFRSRowGQPtZ73", this);
+            mClient = new MobileServiceClient("https://macchickentodolist.azure-mobile.net/", "EBpItddmmIqYlzvAljjFRSRowGQPtZ73", this).withFilter(new ProgressFilter());;
             mMessageTable = mClient.getTable(Message.class);
         } catch (MalformedURLException e) {
             e.printStackTrace();
         }
-        //use "activity_main.xml" as the layout
-        setContentView(R.layout.activity_main);
-        //reference the "listview" variable to the id-"listview" in the layout
         listview = (ListView) findViewById(R.id.listView);
         addItemEditText = (EditText) findViewById(R.id.txtNewItem);
         //create an ArrayList of String
@@ -89,9 +102,13 @@ public class MainActivity extends ActionBarActivity {
         String toAddString = addItemEditText.getText().toString();
         if (toAddString != null && toAddString.length() > 0) {
 //            MesssageModel temp=new MesssageModel(java.util.UUID.randomUUID().toString(),tools.localCreatedTime(), toAddString);
-            Message temp=new Message(null,toAddString,tools.localCreatedTime());
-            addNewMessage(temp);
-            addItemEditText.setText(""); // Reset the edittext
+            if (containMessage(toAddString)){
+                Toast.makeText(this, "there is:'" + toAddString+"' in the list", Toast.LENGTH_SHORT).show();
+            }else{
+                Message temp=new Message(null,toAddString,tools.localCreatedTime());
+                addNewMessage(temp);
+                addItemEditText.setText(""); // Reset the edittext
+            }
 //            if (!storeService.insertItems(messesages,temp)){
 //                Toast.makeText(this, "there is:'" + temp.getContent()+"' in the list", Toast.LENGTH_SHORT).show();
 //            }else{
@@ -163,78 +180,138 @@ public class MainActivity extends ActionBarActivity {
     }
 
     private void refreshItemsFromTable() {
-                AsyncTask<Void, Void, Void> task = new AsyncTask<Void, Void, Void>(){
-                        @Override
-                        protected Void doInBackground(Void... params) {
-                                try {
-                                        final List<Message> results = mMessageTable.where().execute().get();
-                                        runOnUiThread(new Runnable() {
-                                                @Override
-                                                public void run() {
-                                                        if (results!=null){
-                                                                messesages.clear();
-                                                                for (Message item : results) {
-                                                                        messesages.add(new MesssageModel(item.getId(),item.getCreatedTime(),item.getContent()));
-                                                                    }
-                                                                messAdapter.notifyDataSetChanged();
-                                                            }
-                                                    }
-                                            });
-                                    } catch (final Exception e){
-                                        e.printStackTrace();
-                                    }
-                                return null;
+        AsyncTask<Void, Void, Void> task = new AsyncTask<Void, Void, Void>(){
+            @Override
+            protected Void doInBackground(Void... params) {
+                try {
+                        final List<Message> results = mMessageTable.where().execute().get();
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                if (results!=null){
+                                    messesages.clear();
+                                    for (Message item : results) {
+                                        messesages.add(new MesssageModel(item.getId(),item.getCreatedTime(),item.getContent()));
+                                        }
+                                    messAdapter.notifyDataSetChanged();
+                                }
                             }
-                    }.execute();
+                        });
+                    } catch (final Exception e){
+                        e.printStackTrace();
+                    }
+                return null;
             }
+        };
+        runAsyncTask(task);
+    }
 
     private void updateMessage(final Message newMessage){
         AsyncTask<Void, Void, Void> task = new AsyncTask<Void, Void, Void>(){
-                @Override
-                protected Void doInBackground(Void... params) {
-                        try {
-                                mMessageTable.update(newMessage);
-                            } catch (final Exception e) {
-                                e.printStackTrace();
-                            }
-                        return null;
+            @Override
+            protected Void doInBackground(Void... params) {
+                try {
+                    mMessageTable.update(newMessage);
+                    } catch (final Exception e) {
+                        e.printStackTrace();
                     }
-            }.execute();
+                return null;
+            }
+        };
+        runAsyncTask(task);
     }
 
     private void delMessage(final Message message){
-        AsyncTask<Void, Void, Void> task = new AsyncTask<Void, Void, Void>(){
-                @Override
-                protected Void doInBackground(Void... params) {
-                        try {
-                                mMessageTable.delete(message);
-                            } catch (final Exception e) {
-                                e.printStackTrace();
-                            }
-                        return null;
-                    }
-            }.execute();
+        AsyncTask<Void, Void, Void> task = new AsyncTask<Void, Void, Void>() {
+            @Override
+            protected Void doInBackground(Void... params) {
+                try {
+                    mMessageTable.delete(message);
+                } catch (final Exception e) {
+                    e.printStackTrace();
+                }
+                return null;
+            }
+        };
+        runAsyncTask(task);
     }
 
     private void addNewMessage(final Message message){
         AsyncTask<Void, Void, Void> task = new AsyncTask<Void, Void, Void>(){
-                @Override
-                protected Void doInBackground(Void... params) {
-                        try {
-                                final Message result = mMessageTable.insert(message).get();
-                                runOnUiThread(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                                if(result!=null){
-                                                        messAdapter.add(new MesssageModel(result.getId(),result.getCreatedTime(),result.getContent()));
-                                                    }
-                                            }
-                                    });
-                            } catch (final Exception e) {
-                                e.printStackTrace();
+            @Override
+            protected Void doInBackground(Void... params) {
+                try {
+                    final Message result = mMessageTable.insert(message).get();
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (result != null) {
+                                messAdapter.add(new MesssageModel(result.getId(), result.getCreatedTime(), result.getContent()));
                             }
-                        return null;
-                    }
-            }.execute();
+                        }
+                    });
+                } catch (final Exception e) {
+                    e.printStackTrace();
+                }
+                return null;
+            }
+        };
+        runAsyncTask(task);
+    }
+
+    private boolean containMessage(String text){
+        for (MesssageModel mm:messesages){
+            if (mm.getContent().equals(text)){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Run an ASync task on the corresponding executor
+     * @param task
+     * @return
+     */
+    private AsyncTask<Void, Void, Void> runAsyncTask(AsyncTask<Void, Void, Void> task) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+            return task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+        } else {
+            return task.execute();
+        }
+    }
+
+    private class ProgressFilter implements ServiceFilter {
+        @Override
+        public ListenableFuture<ServiceFilterResponse> handleRequest(ServiceFilterRequest request, NextServiceFilterCallback nextServiceFilterCallback) {
+            final SettableFuture<ServiceFilterResponse> resultFuture = SettableFuture.create();
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    if (mProgressBar != null) mProgressBar.setVisibility(ProgressBar.VISIBLE);
+                }
+            });
+
+            ListenableFuture<ServiceFilterResponse> future = nextServiceFilterCallback.onNext(request);
+            Futures.addCallback(future, new FutureCallback<ServiceFilterResponse>() {
+                @Override
+                public void onFailure(Throwable e) {
+                    resultFuture.setException(e);
+                }
+                @Override
+                public void onSuccess(ServiceFilterResponse response) {
+                    runOnUiThread(new Runnable() {
+
+                        @Override
+                        public void run() {
+                            if (mProgressBar != null) mProgressBar.setVisibility(ProgressBar.GONE);
+                        }
+                    });
+
+                    resultFuture.set(response);
+                }
+            });
+            return resultFuture;
+        }
     }
 }
