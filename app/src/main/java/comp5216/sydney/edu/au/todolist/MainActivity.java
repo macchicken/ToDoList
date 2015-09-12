@@ -74,6 +74,7 @@ public class MainActivity extends ActionBarActivity {
     private final Object mAuthenticationLock = new Object();
     private Button addBtn;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
