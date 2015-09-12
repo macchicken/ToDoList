@@ -380,6 +380,7 @@ public class MainActivity extends ActionBarActivity {
     }
 
     private void createTable() {
+        System.out.println("create table");
         // Get the Mobile Service Table instance to use
         mMessageTable = mClient.getTable(Message.class);
         addItemEditText = (EditText) findViewById(R.id.txtNewItem);
