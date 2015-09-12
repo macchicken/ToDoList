@@ -35,7 +35,7 @@
         android:id="@+id/btnAddItem"
         android:layout_alignParentBottom="true"
         android:layout_toRightOf="@+id/txtNewItem"
-        android:onClick="onAddItemClick"/>
+        android:onClick="onAddItemClick" />
 
 
 </RelativeLayout>
