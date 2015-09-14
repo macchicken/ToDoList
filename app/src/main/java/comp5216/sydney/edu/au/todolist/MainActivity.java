@@ -16,6 +16,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import android.view.View;
+import android.webkit.CookieManager;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
@@ -122,13 +123,14 @@ public class MainActivity extends ActionBarActivity {
         switch (id){
             case R.id.log_out:
                 deleteUserToken(mClient.getCurrentUser());
-                android.webkit.CookieManager.getInstance().setCookie(".google.com", "HSID=");
-                android.webkit.CookieManager.getInstance().setCookie(".google.com", "NID=");
-                android.webkit.CookieManager.getInstance().setCookie(".google.com", "PREF=");
-                android.webkit.CookieManager.getInstance().setCookie(".google.com", "SAPISID=");
-                android.webkit.CookieManager.getInstance().setCookie(".google.com", "SID=");
-                android.webkit.CookieManager.getInstance().setCookie(".google.com", "SSID=");
-                android.webkit.CookieManager.getInstance().setCookie(".google.com", "APISID=");
+                CookieManager myc=android.webkit.CookieManager.getInstance();
+                myc.setCookie(".google.com", "HSID=");
+                myc.setCookie(".google.com", "NID=");
+                myc.setCookie(".google.com", "PREF=");
+                myc.setCookie(".google.com", "SAPISID=");
+                myc.setCookie(".google.com", "SID=");
+                myc.setCookie(".google.com", "SSID=");
+                myc.setCookie(".google.com", "APISID=");
                 mClient.logout();
                 Intent startMain = new Intent(Intent.ACTION_MAIN);
                 startMain.addCategory(Intent.CATEGORY_HOME);
