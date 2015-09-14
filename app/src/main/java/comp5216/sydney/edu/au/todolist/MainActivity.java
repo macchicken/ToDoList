@@ -121,6 +121,14 @@ public class MainActivity extends ActionBarActivity {
         //noinspection SimplifiableIfStatement
         switch (id){
             case R.id.log_out:
+                deleteUserToken(mClient.getCurrentUser());
+                android.webkit.CookieManager.getInstance().setCookie(".google.com", "HSID=");
+                android.webkit.CookieManager.getInstance().setCookie(".google.com", "NID=");
+                android.webkit.CookieManager.getInstance().setCookie(".google.com", "PREF=");
+                android.webkit.CookieManager.getInstance().setCookie(".google.com", "SAPISID=");
+                android.webkit.CookieManager.getInstance().setCookie(".google.com", "SID=");
+                android.webkit.CookieManager.getInstance().setCookie(".google.com", "SSID=");
+                android.webkit.CookieManager.getInstance().setCookie(".google.com", "APISID=");
                 mClient.logout();
                 Intent startMain = new Intent(Intent.ACTION_MAIN);
                 startMain.addCategory(Intent.CATEGORY_HOME);
@@ -427,6 +435,13 @@ public class MainActivity extends ActionBarActivity {
         Editor editor = prefs.edit();
         editor.putString(USERIDPREF, user.getUserId());
         editor.putString(TOKENPREF, user.getAuthenticationToken());
+        editor.commit();
+    }
+    private void deleteUserToken(MobileServiceUser user){
+        SharedPreferences prefs = getSharedPreferences(SHAREDPREFFILE, Context.MODE_PRIVATE);
+        Editor editor = prefs.edit();
+        editor.remove(USERIDPREF);
+        editor.remove(TOKENPREF);
         editor.commit();
     }
 
