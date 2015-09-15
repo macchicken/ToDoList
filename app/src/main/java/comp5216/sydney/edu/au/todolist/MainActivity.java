@@ -74,7 +74,7 @@ public class MainActivity extends ActionBarActivity {
     private boolean bAuthenticating = false;
     private final Object mAuthenticationLock = new Object();
     private Button addBtn;
-
+    private CookieManager myc;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -103,7 +103,7 @@ public class MainActivity extends ActionBarActivity {
 //        messAdapter=new MyMesssageAdapter(this,messesages);
 //        listview.setAdapter(messAdapter);
 //        refreshItemsFromTable();
-
+        myc=android.webkit.CookieManager.getInstance();
     }
 
     @Override
@@ -123,14 +123,7 @@ public class MainActivity extends ActionBarActivity {
         switch (id){
             case R.id.log_out:
                 deleteUserToken(mClient.getCurrentUser());
-                CookieManager myc=android.webkit.CookieManager.getInstance();
-                myc.setCookie(".google.com", "HSID=");
-                myc.setCookie(".google.com", "NID=");
-                myc.setCookie(".google.com", "PREF=");
-                myc.setCookie(".google.com", "SAPISID=");
-                myc.setCookie(".google.com", "SID=");
-                myc.setCookie(".google.com", "SSID=");
-                myc.setCookie(".google.com", "APISID=");
+                myc.removeAllCookie();
                 mClient.logout();
                 Intent startMain = new Intent(Intent.ACTION_MAIN);
                 startMain.addCategory(Intent.CATEGORY_HOME);
