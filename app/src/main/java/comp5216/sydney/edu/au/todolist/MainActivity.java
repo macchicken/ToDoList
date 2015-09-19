@@ -40,8 +40,6 @@ import com.microsoft.windowsazure.mobileservices.http.ServiceFilterRequest;
 import com.microsoft.windowsazure.mobileservices.http.ServiceFilterResponse;
 import com.microsoft.windowsazure.mobileservices.table.MobileServiceTable;
 
-import static com.microsoft.windowsazure.mobileservices.table.query.QueryOperations.val;
-
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -52,8 +50,6 @@ import android.content.SharedPreferences.Editor;
 import com.microsoft.windowsazure.mobileservices.authentication.MobileServiceAuthenticationProvider;
 import com.microsoft.windowsazure.mobileservices.authentication.MobileServiceUser;
 
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.ExecutionException;
 
 import com.microsoft.windowsazure.mobileservices.MobileServiceException;
 
@@ -119,18 +115,23 @@ public class MainActivity extends ActionBarActivity {
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-        //noinspection SimplifiableIfStatement
         switch (id){
             case R.id.log_out:
-                deleteUserToken(mClient.getCurrentUser());
-                myc.removeAllCookie();
-                mClient.logout();
+                try {
+                    deleteUserToken(mClient.getCurrentUser());
+                    myc.removeAllCookie();
+                    Toast.makeText(this, "you have successfully logout", Toast.LENGTH_SHORT).show();
+                }catch(Throwable ex){
+                    ex.printStackTrace();
+                }
+                return true;
+            case R.id.log_in: authenticate(false);return true;
+            case R.id.quit:
                 Intent startMain = new Intent(Intent.ACTION_MAIN);
                 startMain.addCategory(Intent.CATEGORY_HOME);
                 startMain.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 TodoListApplication.getContext().startActivity(startMain);
                 return true;
-            case R.id.action_settings: return true;
             default: return super.onOptionsItemSelected(item);
         }
     }
