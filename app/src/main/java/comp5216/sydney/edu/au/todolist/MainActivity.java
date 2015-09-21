@@ -120,6 +120,11 @@ public class MainActivity extends ActionBarActivity {
                 try {
                     deleteUserToken(mClient.getCurrentUser());
                     myc.removeAllCookie();
+                    messesages = new ArrayList<MesssageModel>();
+                    // Create an adapter to bind the items with the view
+                    messAdapter=new MyMesssageAdapter(this,messesages);
+                    listview = (ListView) findViewById(R.id.listView);
+                    listview.setAdapter(messAdapter);
                     Toast.makeText(this, "you have successfully logout", Toast.LENGTH_SHORT).show();
                 }catch(Throwable ex){
                     ex.printStackTrace();
